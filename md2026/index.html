@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Qingdao Mission Day 任务展示</title>
+    <style>
+      :root {
+        --primary-blue: #0070e0;
+        --accent-gray: #f5f7fa;
+        --border-color: #e1e4e8;
+        --text-dark: #24292e;
+        --text-light: #586069;
+      }
+
+      body {
+        background-color: #ffffff;
+        color: var(--text-dark);
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial,
+          sans-serif;
+        margin: 0;
+        padding: 0;
+        line-height: 1.6;
+      }
+
+      /* 页眉部分 */
+      header {
+        background-color: var(--accent-gray);
+        border-bottom: 1px solid var(--border-color);
+        padding: 40px 20px;
+        text-align: center;
+      }
+
+      header h1 {
+        margin: 0;
+        font-size: 2rem;
+        color: var(--primary-blue);
+        letter-spacing: 1px;
+      }
+
+      header p {
+        margin: 10px 0 0;
+        color: var(--text-light);
+        font-weight: 300;
+      }
+
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 40px 20px;
+      }
+
+      /* 路线总览区 */
+      .route-summary {
+        background: #fff;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 50px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .route-summary h2 {
+        margin-top: 0;
+        font-size: 1.3rem;
+        border-left: 4px solid var(--primary-blue);
+        padding-left: 15px;
+      }
+
+      .overall-map {
+        width: 100%;
+        height: auto;
+        border-radius: 4px;
+        margin-top: 15px;
+        object-fit: contain; /* 确保整体路线图完整显示 */
+      }
+
+      /* 任务网格：3列布局 */
+      .mission-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 30px;
+      }
+
+      .mission-card {
+        background: #fff;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+
+      .mission-card:hover {
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        border-color: var(--primary-blue);
+      }
+
+      /* 固定比例大图 (800x700) */
+      .large-image-container {
+        width: 100%;
+        aspect-ratio: 800 / 700;
+        overflow: hidden;
+        background: #eee;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .large-image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* 确保800*700区域完整填充 */
+      }
+
+      /* 勋章/角色小图 (1:1) */
+      .character-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-top: -30px; /* 向上悬浮效果 */
+      }
+
+      .character-image {
+        width: 60px; /* 设定勋章/角色的具体大小 */
+        height: 60px;
+        aspect-ratio: 1 / 1;
+        border-radius: 50%; /* 圆形勋章效果 */
+        border: 3px solid #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        object-fit: cover;
+        background: #fff;
+      }
+
+      .card-content {
+        padding: 20px;
+        /* text-align: center; 居中文字 */
+      }
+
+      .mission-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 5px;
+      }
+
+      .mission-num {
+        font-weight: 800;
+        color: var(--primary-blue);
+        font-size: 1.1rem;
+      }
+
+      .mission-name {
+        font-size: 1.1rem;
+        font-weight: 600;
+      }
+
+      .mission-poi {
+        font-size: 0.9rem;
+        color: var(--text-light);
+        margin: 0;
+      }
+
+      footer {
+        text-align: center;
+        padding: 40px;
+        color: #aaa;
+        font-size: 0.85rem;
+        border-top: 1px solid var(--border-color);
+      }
+
+      /* 手机端适配 */
+      @media (max-width: 600px) {
+        .mission-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Qingdao Mission Day</h1>
+      <p>青岛：百年海岸线探索计划 | 2026</p>
+    </header>
+
+    <div class="container">
+      <div class="route-summary">
+        <h2>整体路线总览 (Overview)</h2>
+        <img src="overall-map.jpg" alt="总览图" class="overall-map" />
+        <p
+          style="
+            text-align: center;
+            color: #888;
+            font-size: 0.9em;
+            margin-top: 10px;
+          "
+        >
+          全长约 8.5 公里，全程平坦无坡度
+        </p>
+      </div>
+
+      <div class="mission-grid">
+        <!-- 01 -->
+        <div class="mission-card">
+          <div class="large-image-container">
+            <img src="01.png" alt="五四广场" />
+          </div>
+
+          <div class="character-container">
+            <img src="01-p.jpg" alt="五月的风" class="character-image" />
+          </div>
+
+          <div class="card-content">
+            <div class="mission-meta">
+              <span class="mission-name">任务名称：五四广场</span>
+              <span class="mission-num">01</span>
+            </div>
+            <p class="mission-poi">任务主体：五月的风雕塑</p>
+          </div>
+        </div>
+        <!-- 02 -->
+        <div class="mission-card">
+          <div class="large-image-container">
+            <img src="01.png" alt="火车站路线区" />
+          </div>
+
+          <div class="character-container">
+            <img src="01-p.jpg" alt="火车站钟楼" class="character-image" />
+          </div>
+
+          <div class="card-content">
+            <div class="mission-meta">
+              <span class="mission-name">任务名称：五四广场</span>
+              <span class="mission-num">01</span>
+            </div>
+            <p class="mission-poi">任务主体：五月的风雕塑</p>
+          </div>
+        </div>
+        <!-- 03 -->
+        <div class="mission-card">
+          <div class="large-image-container">
+            <img src="01.png" alt="火车站路线区" />
+          </div>
+
+          <div class="character-container">
+            <img src="01-p.jpg" alt="火车站钟楼" class="character-image" />
+          </div>
+
+          <div class="card-content">
+            <div class="mission-meta">
+              <span class="mission-name">任务名称：五四广场</span>
+              <span class="mission-num">01</span>
+            </div>
+            <p class="mission-poi">任务主体：五月的风雕塑</p>
+          </div>
+        </div>
+        <!-- 04 -->
+        <div class="mission-card">
+          <div class="large-image-container">
+            <img src="01.png" alt="火车站路线区" />
+          </div>
+
+          <div class="character-container">
+            <img src="01-p.jpg" alt="火车站钟楼" class="character-image" />
+          </div>
+
+          <div class="card-content">
+            <div class="mission-meta">
+              <span class="mission-name">任务名称：五四广场</span>
+              <span class="mission-num">01</span>
+            </div>
+            <p class="mission-poi">任务主体：五月的风雕塑</p>
+          </div>
+        </div>
+        <!-- 05 -->
+        <div class="mission-card">
+          <div class="large-image-container">
+            <img src="01.png" alt="火车站路线区" />
+          </div>
+
+          <div class="character-container">
+            <img src="01-p.jpg" alt="火车站钟楼" class="character-image" />
+          </div>
+
+          <div class="card-content">
+            <div class="mission-meta">
+              <span class="mission-name">任务名称：五四广场</span>
+              <span class="mission-num">01</span>
+            </div>
+            <p class="mission-poi">任务主体：五月的风雕塑</p>
+          </div>
+        </div>
+        <!-- 06 -->
+        <div class="mission-card">
+          <div class="large-image-container">
+            <img src="01.png" alt="火车站路线区" />
+          </div>
+
+          <div class="character-container">
+            <img src="01-p.jpg" alt="火车站钟楼" class="character-image" />
+          </div>
+
+          <div class="card-content">
+            <div class="mission-meta">
+              <span class="mission-name">任务名称：五四广场</span>
+              <span class="mission-num">01</span>
+            </div>
+            <p class="mission-poi">任务主体：五月的风雕塑</p>
+          </div>
+        </div>
+        <!-- 07 -->
+        <div class="mission-card">
+          <div class="large-image-container">
+            <img src="01.png" alt="火车站路线区" />
+          </div>
+
+          <div class="character-container">
+            <img src="01-p.jpg" alt="火车站钟楼" class="character-image" />
+          </div>
+
+          <div class="card-content">
+            <div class="mission-meta">
+              <span class="mission-name">任务名称：五四广场</span>
+              <span class="mission-num">01</span>
+            </div>
+            <p class="mission-poi">任务主体：五月的风雕塑</p>
+          </div>
+        </div>
+        <!-- 08 -->
+        <div class="mission-card">
+          <div class="large-image-container">
+            <img src="01.png" alt="火车站路线区" />
+          </div>
+
+          <div class="character-container">
+            <img src="01-p.jpg" alt="火车站钟楼" class="character-image" />
+          </div>
+
+          <div class="card-content">
+            <div class="mission-meta">
+              <span class="mission-name">任务名称：五四广场</span>
+              <span class="mission-num">01</span>
+            </div>
+            <p class="mission-poi">任务主体：五月的风雕塑</p>
+          </div>
+        </div>
+        <!-- 09 -->
+        <div class="mission-card">
+          <div class="large-image-container">
+            <img src="01.png" alt="火车站路线区" />
+          </div>
+
+          <div class="character-container">
+            <img src="01-p.jpg" alt="火车站钟楼" class="character-image" />
+          </div>
+
+          <div class="card-content">
+            <div class="mission-meta">
+              <span class="mission-name">任务名称：五四广场</span>
+              <span class="mission-num">01</span>
+            </div>
+            <p class="mission-poi">任务主体：五月的风雕塑</p>
+          </div>
+        </div>
+        <!-- 10 -->
+        <div class="mission-card">
+          <div class="large-image-container">
+            <img src="01.png" alt="火车站路线区" />
+          </div>
+
+          <div class="character-container">
+            <img src="01-p.jpg" alt="火车站钟楼" class="character-image" />
+          </div>
+
+          <div class="card-content">
+            <div class="mission-meta">
+              <span class="mission-name">任务名称：五四广场</span>
+              <span class="mission-num">01</span>
+            </div>
+            <p class="mission-poi">任务主体：五月的风雕塑</p>
+          </div>
+        </div>
+        <!-- 11 -->
+        <div class="mission-card">
+          <div class="large-image-container">
+            <img src="01.png" alt="火车站路线区" />
+          </div>
+
+          <div class="character-container">
+            <img src="01-p.jpg" alt="火车站钟楼" class="character-image" />
+          </div>
+
+          <div class="card-content">
+            <div class="mission-meta">
+              <span class="mission-name">任务名称：五四广场</span>
+              <span class="mission-num">01</span>
+            </div>
+            <p class="mission-poi">任务主体：五月的风雕塑</p>
+          </div>
+        </div>
+        <!-- 12 -->
+        <div class="mission-card">
+          <div class="large-image-container">
+            <img src="01.png" alt="火车站路线区" />
+          </div>
+
+          <div class="character-container">
+            <img src="01-p.jpg" alt="火车站钟楼" class="character-image" />
+          </div>
+
+          <div class="card-content">
+            <div class="mission-meta">
+              <span class="mission-name">任务名称：五四广场</span>
+              <span class="mission-num">01</span>
+            </div>
+            <p class="mission-poi">任务主体：五月的风雕塑</p>
+          </div>
+        </div>
+        <!-- 13 -->
+        <div class="mission-card">
+          <div class="large-image-container">
+            <img src="01.png" alt="火车站路线区" />
+          </div>
+
+          <div class="character-container">
+            <img src="01-p.jpg" alt="火车站钟楼" class="character-image" />
+          </div>
+
+          <div class="card-content">
+            <div class="mission-meta">
+              <span class="mission-name">任务名称：五四广场</span>
+              <span class="mission-num">01</span>
+            </div>
+            <p class="mission-poi">任务主体：五月的风雕塑</p>
+          </div>
+        </div>
+        <!-- 14 -->
+        <div class="mission-card">
+          <div class="large-image-container">
+            <img src="01.png" alt="火车站路线区" />
+          </div>
+
+          <div class="character-container">
+            <img src="01-p.jpg" alt="火车站钟楼" class="character-image" />
+          </div>
+
+          <div class="card-content">
+            <div class="mission-meta">
+              <span class="mission-name">任务名称：五四广场</span>
+              <span class="mission-num">01</span>
+            </div>
+            <p class="mission-poi">任务主体：五月的风雕塑</p>
+          </div>
+        </div>
+        <!-- 15 -->
+        <div class="mission-card">
+          <div class="large-image-container">
+            <img src="01.png" alt="火车站路线区" />
+          </div>
+
+          <div class="character-container">
+            <img src="01-p.jpg" alt="火车站钟楼" class="character-image" />
+          </div>
+
+          <div class="card-content">
+            <div class="mission-meta">
+              <span class="mission-name">任务名称：五四广场</span>
+              <span class="mission-num">01</span>
+            </div>
+            <p class="mission-poi">任务主体：五月的风雕塑</p>
+          </div>
+        </div>
+        <!-- 16 -->
+        <div class="mission-card">
+          <div class="large-image-container">
+            <img src="01.png" alt="火车站路线区" />
+          </div>
+
+          <div class="character-container">
+            <img src="01-p.jpg" alt="火车站钟楼" class="character-image" />
+          </div>
+
+          <div class="card-content">
+            <div class="mission-meta">
+              <span class="mission-name">任务名称：五四广场</span>
+              <span class="mission-num">01</span>
+            </div>
+            <p class="mission-poi">任务主体：五月的风雕塑</p>
+          </div>
+        </div>
+        <!-- 17 -->
+        <div class="mission-card">
+          <div class="large-image-container">
+            <img src="01.png" alt="火车站路线区" />
+          </div>
+
+          <div class="character-container">
+            <img src="01-p.jpg" alt="火车站钟楼" class="character-image" />
+          </div>
+
+          <div class="card-content">
+            <div class="mission-meta">
+              <span class="mission-name">任务名称：五四广场</span>
+              <span class="mission-num">01</span>
+            </div>
+            <p class="mission-poi">任务主体：五月的风雕塑</p>
+          </div>
+        </div>
+        <!-- 18 -->
+        <div class="mission-card">
+          <div class="large-image-container">
+            <img src="18.png" alt="火车站路线区" />
+          </div>
+
+          <div class="character-container">
+            <img src="18-p.jpg" alt="火车站钟楼" class="character-image" />
+          </div>
+
+          <div class="card-content">
+            <div class="mission-meta">
+              <span class="mission-name">任务名称：小麦岛</span>
+              <span class="mission-num">01</span>
+            </div>
+            <p class="mission-poi">任务主体：海豚雕塑</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <footer>© 2026 Qingdao Ingress Agents | Cross-Faction Collaboration</footer>
+    <div
+      id="imageOverlay"
+      style="
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.9);
+        cursor: zoom-out;
+        justify-content: center;
+        align-items: center;
+        transition: all 0.3s;
+      "
+    >
+      <img
+        id="fullImage"
+        style="
+          max-width: 95%;
+          max-height: 95%;
+          border: 2px solid #fff;
+          box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+        "
+      />
+    </div>
+
+    <script>
+      const overlay = document.getElementById("imageOverlay");
+      const fullImg = document.getElementById("fullImage");
+
+      // 选取所有需要点击放大的图片类型
+      const clickableImages = document.querySelectorAll(
+        ".large-image-container img, .character-image, .overall-map",
+      );
+
+      clickableImages.forEach((img) => {
+        img.title = "点击查看原图";
+        img.style.cursor = "zoom-in";
+        img.onclick = function (e) {
+          e.stopPropagation();
+          overlay.style.display = "flex";
+          fullImg.src = this.src;
+          // 锁定背景滚动
+          document.body.style.overflow = "hidden";
+        };
+      });
+
+      // 点击遮罩层任何位置关闭
+      overlay.onclick = function () {
+        overlay.style.display = "none";
+        // 恢复背景滚动
+        document.body.style.overflow = "auto";
+      };
+    </script>
+  </body>
+</html>
